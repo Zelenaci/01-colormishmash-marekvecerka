@@ -2,7 +2,7 @@
 
 from os.path import basename, splitext
 import tkinter as tk
-from tkinter import Label, Button, Scale, HORIZONTAL, Canvas
+from tkinter import Label, Button, Scale, HORIZONTAL, Canvas, LEFT, Frame, Entry, S, END, StringVar
 
 # from tkinter import ttk
 
@@ -17,24 +17,45 @@ class Application(tk.Tk):
 
         self.bind("<Escape>", self.quit)
 
-        self.lblR = tk.Label(self, text="R")
-        self.lblR.pack()
-        self.scaleR = Scale(from_=0, to=255, orient=HORIZONTAL, length=256, command=self.change)
-        self.scaleR.pack()
+        self.frameR = Frame(self)
+        self.frameR.pack()
+        self.frameG = Frame(self)
+        self.frameG.pack()
+        self.frameB = Frame(self)
+        self.frameB.pack()
 
-        self.lblG = tk.Label(self, text="G")
-        self.lblG.pack()
-        self.scaleG = Scale(from_=0, to=255, orient=HORIZONTAL, length=256, command=self.change)
-        self.scaleG.pack()
+        self.lblR = tk.Label(self, text="R:")
+        self.varR = StringVar()
+        self.lblR.pack(side=LEFT, anchor=S)
+        self.scaleR = Scale(
+            self.frameR, from_=0, to=255, orient=HORIZONTAL, length=256, command=self.change)
+        self.scaleR.pack(side=LEFT, anchor=S)
+        self.entryR = Entry(self.frameR, width=4, textvariable=self.varR)
+        self.entryR.pack(side=LEFT, anchor=S)
 
-        self.lblB = tk.Label(self, text="B")
-        self.lblB.pack()
-        self.scaleB = Scale(from_=0, to=255, orient=HORIZONTAL, length=256, command=self.change)
-        self.scaleB.pack()
+        self.lblG = tk.Label(self, text="G:")
+        self.varG = StringVar()
+        self.lblG.pack(side=LEFT, anchor=S)
+        self.scaleG = Scale(
+            self.frameG, from_=0, to=255, orient=HORIZONTAL, length=256, command=self.change)
+        self.scaleG.pack(side=LEFT, anchor=S)
+        self.entryG = Entry(self.frameG, width=4, textvariable=self.varG)
+        self.entryG.pack(side=LEFT, anchor=S)
+
+        self.lblB = tk.Label(self, text="B:")
+        self.varB = StringVar()
+        self.lblB.pack(side=LEFT, anchor=S)
+        self.scaleB = Scale(
+            self.frameB, from_=0, to=255, orient=HORIZONTAL, length=256, command=self.change)
+        self.scaleB.pack(side=LEFT, anchor=S)
+        self.entryB = Entry(self.frameB, width=4, textvariable=self.varB)
+        self.entryB.pack(side=LEFT, anchor=S)
         
 
-        self.canvasMain = Canvas(width=256, height=100, background="#123456")
+        self.canvasMain = Canvas(width=256, height=100, background="#000000")
         self.canvasMain.pack()
+        self.entryMain = Entry(self,)
+        self.entryMain.pack(side=LEFT)
 
 
 
@@ -48,9 +69,15 @@ class Application(tk.Tk):
         r = self.scaleR.get()
         g = self.scaleG.get()
         b = self.scaleB.get()
-        self.canvasMain.config(background=f"#{r:02x}{g:02x}{b:02x}")
-        print(f"#{r:2x}{g:2x}{b:2x}")
-        print(f"#{r:02x}{g:02x}{b:02x}")
+        colorcode = (f"#{r:02x}{g:02x}{b:02x}")
+        self.canvasMain.config(background=colorcode)
+        self.entryMain.delete(0, END)
+        self.entryMain.insert(0, colorcode)
+
+        self.varR.set(r)
+        self.varG.set(g)
+        self.varB.set(b)
+
 
     def quit(self, event=None):
         super().quit()
