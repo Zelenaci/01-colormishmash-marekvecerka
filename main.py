@@ -16,6 +16,7 @@ class Application(tk.Tk):
         self.title(self.name)
 
         self.bind("<Escape>", self.quit)
+        self.protocol("WM_DELETE_WINDOW", self.quit)
 
         self.frameR = Frame(self)
         self.frameR.pack()
@@ -25,9 +26,9 @@ class Application(tk.Tk):
         self.frameB.pack()
 
         self.lblR = tk.Label(self, text="R:")
+        self.lblR.pack(side=LEFT, anchor=S)
         self.varR = StringVar()
         self.varR.trace('w', self.change)
-        self.lblR.pack(side=LEFT, anchor=S)
         self.scaleR = Scale(
             self.frameR, from_=0, to=255, orient=HORIZONTAL, length=256, variable=self.varR)
         self.scaleR.pack(side=LEFT, anchor=S)
@@ -35,10 +36,9 @@ class Application(tk.Tk):
         self.entryR.pack(side=LEFT, anchor=S)
 
         self.lblG = tk.Label(self, text="G:")
+        self.lblG.pack(side=LEFT, anchor=S)
         self.varG = StringVar()
         self.varG.trace('w', self.change)
-
-        self.lblG.pack(side=LEFT, anchor=S)
         self.scaleG = Scale(
             self.frameG, from_=0, to=255, orient=HORIZONTAL, length=256, variable=self.varG)
         self.scaleG.pack(side=LEFT, anchor=S)
@@ -46,21 +46,26 @@ class Application(tk.Tk):
         self.entryG.pack(side=LEFT, anchor=S)
 
         self.lblB = tk.Label(self, text="B:")
+        self.lblB.pack(side=LEFT, anchor=S)
         self.varB = StringVar()
         self.varB.trace('w', self.change)
-        self.lblB.pack(side=LEFT, anchor=S)
         self.scaleB = Scale(
             self.frameB, from_=0, to=255, orient=HORIZONTAL, length=256, variable=self.varB)
         self.scaleB.pack(side=LEFT, anchor=S)
         self.entryB = Entry(self.frameB, width=4, textvariable=self.varB)
         self.entryB.pack(side=LEFT, anchor=S)
+
+        self.varR.trace("w", self.change)
+        self.varB.trace("w", self.change)
+        self.varG.trace("w", self.change)
+
         
 
         self.canvasMain = Canvas(width=256, height=100, background="#000000")
         self.canvasMain.bind("<Button-1>", self.clickHandler)
         self.canvasMain.pack()
         self.entryMain = Entry(self,)
-        self.entryMain.pack(side=LEFT)
+        self.entryMain.pack()
 
 
 
@@ -78,6 +83,8 @@ class Application(tk.Tk):
                 canvas.bind("<Button-1>", self.clickHandler)
                 self.canvasMem.append(canvas)
         
+        self.load()
+
     def clickHandler(self,event):
         if self.cget('cursor') != 'pencil':
             self.config(cursor='pencil')
@@ -101,8 +108,33 @@ class Application(tk.Tk):
         self.varG.set(g)
         self.varB.set(b)
 
+    def canvasMain2Scales(self):
+        color = self.canvasMain.cget('background')
+        print(color)
+        r = int(color[1:3],16)
+        g = int(color[3:6],16)
+        b = int(color[5:], 16)
+
+    def load(self):
+        try: 
+            with open("paleta.txt", "r") as f:
+                color = f.readline().strip()
+
+                self.canvasMain.config(background=color)
+                self.canvasMain2Scales()
+                for canvas in self.canvasMem:
+                    color = f.readline().strip()
+                    canvas.config(background=color)
+        except FileNotFoundError:
+            print("Nepodařilo se načíst.")
+            
 
     def quit(self, event=None):
+        with open('paleta.txt', 'w') as f:
+            f.write(self.canvasMain.cget('background') + "\n")
+            for canvas in self.canvasMem:
+                f.write(canvas.cget('background') + "\n")
+        print('Konec')
         super().quit()
 
 
