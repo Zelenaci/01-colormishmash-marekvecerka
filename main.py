@@ -25,9 +25,9 @@ class Application(tk.Tk):
         self.frameB = Frame(self)
         self.frameB.pack()
 
-        self.lblR = tk.Label(self, text="R:")
-        self.lblR.pack(side=LEFT, anchor=S)
         self.varR = StringVar()
+        self.lblR = tk.Label(self.frameR, text="R:")
+        self.lblR.pack(side=LEFT, anchor=S)
         self.varR.trace('w', self.change)
         self.scaleR = Scale(
             self.frameR, from_=0, to=255, orient=HORIZONTAL, length=256, variable=self.varR)
@@ -35,7 +35,7 @@ class Application(tk.Tk):
         self.entryR = Entry(self.frameR, width=4, textvariable=self.varR)
         self.entryR.pack(side=LEFT, anchor=S)
 
-        self.lblG = tk.Label(self, text="G:")
+        self.lblG = tk.Label(self.frameG, text="G:")
         self.lblG.pack(side=LEFT, anchor=S)
         self.varG = StringVar()
         self.varG.trace('w', self.change)
@@ -45,7 +45,7 @@ class Application(tk.Tk):
         self.entryG = Entry(self.frameG, width=4, textvariable=self.varG)
         self.entryG.pack(side=LEFT, anchor=S)
 
-        self.lblB = tk.Label(self, text="B:")
+        self.lblB = tk.Label(self.frameB, text="B:")
         self.lblB.pack(side=LEFT, anchor=S)
         self.varB = StringVar()
         self.varB.trace('w', self.change)
